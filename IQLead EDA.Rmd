@@ -1,0 +1,62 @@
+---
+title: "LeadIQ Exploration"
+author: "Shelby Smith"
+date: "9/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+#install.packages('ggpubr')
+#install.packages('kableExtra')
+library(kableExtra)
+library(ggpubr)
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+```
+
+```{r}
+data <- read.csv("~/Documents/Academic/University of Colorado/BIOS 6621 - Consulting I/lead-iq-01.csv")
+head(data)
+```
+# Graph Demonstrating IQ Levels by Location Status
+
+```{r}
+# Boxplot of the Distribution by Proximity
+ggplot(data, aes(x=IQ, y = Smelter)) + geom_boxplot(outlier.colour = 'red')
+```
+
+> As a first visualization of this dataset, we can see there is a signficant amount of skew in the IQ variable. This visual also highlights the 4 outliers seen in the "Far" designation for Smelter Proximity. Due to the severe skew of this distribution, it's difficult to really compare the majority of the data point in either condition. 
+
+```{r}
+#Boxplot of the Distribution by Proximity -- Log Transformation of X-Axis to visualize w/o skew
+ggplot(data, aes(x = log(IQ), y = Smelter)) + geom_boxplot(outlier.colour = 'red')
+```
+
+> In this second boxplot visualization, I have adjusted for this significant right skew by transforming the x-axis (representing IQ) to a log scale. This allows for a much better comparison of the two conditions, without the heavy influence of the outlier. We can see that while the core of the two distributions are very ssimilar to one another, the individuals with the "Far" proximity to the smelter have more higher IQ's than the "Near" proximity condition. 
+
+```{r}
+#Density plot of the distribution by Proximity
+legend_title <- "Proximity to Smelter"
+ggdensity(data, x = "IQ", fill = "Smelter") + xlab('Measured IQ') + scale_fill_manual(legend_title, values=c("navy","cyan")) + labs(title='IQ by Distance from Smelter') +ylab('Density')
+```
+
+> With the implementation of the Density plot, we can once again see how similar the two distributions are, however now with the visual aide of color, we can even more clearly see the individuals that were far from the smelter, have a distribution shifted slightly above that of individuals that were near the smelter. This can be seen by the navy density falling slightly to the right of the cyan density plot. 
+
+```{r}
+kable(data) %>% kable_styling(fixed_thead = T) %>% scroll_box(width = "500px", height = "200px")
+```
+
+> The above graph, implementing the `kable` function, provides an interactive table for viewing the entire dataset, and the graph below provides measures of center for the IQ variable by proximity to smetler. 
+
+```{r}
+stats <- data %>% group_by(Smelter) %>% summarise(mean(IQ), median(IQ))
+stats
+```
+
+```{r}
+knitr::kable(stats, col.names = c('Smelter', 'Mean IQ','Median IQ'), caption = 'Summary Statistics by Proximity to Smelter')
+```
+
+
+
