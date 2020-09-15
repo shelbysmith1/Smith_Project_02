@@ -18,6 +18,8 @@ library(dplyr)
 ```{r}
 data <- read.csv("~/Documents/Academic/University of Colorado/BIOS 6621 - Consulting I/lead-iq-01.csv")
 head(data)
+data$IQ[data$IQ == '999'] <- 99
+data
 ```
 # Graph Demonstrating IQ Levels by Location Status
 
@@ -57,6 +59,7 @@ stats
 ```{r}
 knitr::kable(stats, col.names = c('Smelter', 'Mean IQ','Median IQ'), caption = 'Summary Statistics by Proximity to Smelter')
 ```
+
 
 
 
